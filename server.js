@@ -13,6 +13,7 @@ const defaultPass = 123;
 // Temporary storage for signup users
 let users = [];
 
+
 // SIGNUP ROUTE
 app.post("/signup", (req, res) => {
   const { email, password } = req.body;
