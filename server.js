@@ -6,52 +6,32 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Default login user
-const defaultEmail = "adhnan@gmail.com";
-const defaultPass = 123;
-
-// Temporary storage for signup users
-let users = [];
-
-
-// SIGNUP ROUTE
-app.post("/signup", (req, res) => {
-  const { email, password } = req.body;
-
-  // Check existing user
-  const exists = users.find(user => user.email === email);
-
-  if (exists) {
-    return res.send({ success: false, message: "User already exists" });
-  }
-
-  // Store new user
-  users.push({ email, password });
-  console.log("Stored Users →", users);
-
-  res.send({ success: true });
-});
+// Multiple default users stored in an array
+let users = [
+  { email: "adhnan@gmail.com", password: "123" },
+  { email: "nandhini@gmail.com", password: "123" },
+  { email: "unknown@gmail.com", password: "123" }
+];
 
 // LOGIN ROUTE
 app.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = Number(req.body.password);
+  const { email, password } = req.body;
 
-  // Check default admin
-  if (email === defaultEmail && password === defaultPass) {
-    return res.send({ success: true });
+  // Check if user exists in array
+  const found = users.find(user => user.email === email && user.password === password);
+
+  if (found) {
+    return res.send(true);
+  } else {
+    return res.send(false);
   }
-
-  // Check signed up users
-  const exists = users.find(
-    user => user.email === email && Number(user.password) === password
-  );
-
-  if (exists) {
-    return res.send({ success: true });
-  }
-
-  res.send({ success: false });
 });
 
-app.listen(3000, () => console.log("Backend running on port 3000"));
+// Just so uptime robot keeps backend awake
+app.get("/", (req, res) => {
+  res.send("Backend running ✔️");
+});
+
+app.listen(3000, () => {
+  console.log("Server Started...");
+});
